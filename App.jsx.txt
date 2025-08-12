@@ -1,0 +1,32 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./App.css";
+function App() {
+  const [quote, setQuote] = useState("");
+  const [author, setAuthor] = useState("");
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const getQuote = async () => {
+    try {
+      const res = await axios.get("https://type.fit/api/quotes");
+      const randomIndex = Math.floor(Math.random() * res.data.length);
+      setQuote(res.data[randomIndex].text);
+      setAuthor(res.data[randomIndex].author || "Unknown");
+      setBgColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
+    } catch (error) {
+      console.error("Error fetching quotes", error);
+    }
+  };
+  useEffect(() => {
+    getQuote();
+  }, []);
+  return (
+    <div className="App" style={{ backgroundColor: bgColor }}>
+      <div className="quote-box">
+        <h2>"{quote}"</h2>
+        <p>- {author}</p>
+        <button onClick={getQuote}>New Quote</button>
+      </div>
+    </div>
+  );
+}
+export default App
